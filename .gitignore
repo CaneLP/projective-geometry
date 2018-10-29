@@ -7,5 +7,5 @@
 venv/
 
 # Input test cases
-*/input*
+input/
 
