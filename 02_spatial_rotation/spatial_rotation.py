@@ -29,7 +29,10 @@ def Euler2A(phi, theta, psi):
 
 
 def AxisAngle(A):
-    if np.linalg.det(A) == 1:
+    eps = 1e-10
+    # Dodato epsilon zbog uocenih malih gresaka zaokruzivanja numpy-a, prilikom testiranja
+    # Kada su vrednosti 0.9999999.... prihvati kao 1
+    if np.abs(np.linalg.det(A) - 1) < eps:
         A1 = A - np.eye(3)
         p = np.cross(A1[0], A1[1])
         p = p / np.linalg.norm(p)
@@ -97,9 +100,15 @@ def main():
     # theta = -np.arcsin(8/9)
     # psi = np.arctan(4)
 
+    # phi = 3.14/3
+    # theta = 3.14/2
+    # psi = -3.14/4
+
     phi = np.pi / 3
     theta = np.pi / 4
     psi = np.pi / 5
+
+    # phi, theta, psi = [np.pi/5, np.pi/6, np.pi/4]
 
     print("Input rotation angles: phi = %s, theta = %s, psi = %s\n" % (phi, theta, psi))
     print("-Euler2A-")
