@@ -140,7 +140,7 @@ def glut_perspective():
     glMatrixMode(GL_PROJECTION)
     gluPerspective(50, 1, 1, 50)
     glMatrixMode(GL_MODELVIEW)
-    gluLookAt(10, 10, 10,
+    gluLookAt(8, 8, 8,
               0, 0, 0,
               0, 0, 1)
     glPushMatrix()
@@ -168,9 +168,10 @@ def lighting():
     glEnable(GL_LIGHTING)
     glEnable(GL_LIGHT0)
 
-def red_lighting():
-    glLightfv(GL_LIGHT1, GL_AMBIENT, GLfloat_4(1.0, 0.0, 0.0, 0.8))
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, GLfloat_4(0.7, 0.0, 0.0, 0.5))
+
+def yellow_lighting():
+    glLightfv(GL_LIGHT1, GL_AMBIENT, GLfloat_4(1.0, 1.0, 0.25, 0.8))
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, GLfloat_4(1.0, 1.0, 0.25, 0.5))
     glLightfv(GL_LIGHT0, GL_SPECULAR, GLfloat_4(1.0, 1.0, 1.0, 1.0))
     glLightfv(GL_LIGHT0, GL_POSITION, GLfloat_4(1.0, 1.0, 1.0, 0.0))
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, GLfloat_4(0.2, 0.2, 0.2, 1.0))
@@ -232,23 +233,21 @@ def display():
     global t, tm
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-    # point1 = np.array([3, 2, 1])
     point1 = np.array([3, -1, -1])
+    # point1 = np.array([3, 2, 1])
     # point1 = np.array([0, 0, 0])
     euler_angles1 = np.array([19 * np.pi / 7, 3 * np.pi / 7, 4 * np.pi / 5])
     A1 = Euler2A(euler_angles1[0], euler_angles1[1], euler_angles1[2])
     p1, rotation_angle1 = AxisAngle(A1)
     q1 = AxisAngle2Q(p1, rotation_angle1)
-    # print(q1)
 
+    point2 = np.array([-3, 1, -2])
     # point2 = np.array([1.5, 0, 0])
     # point2 = np.array([5, 3, 3])
-    point2 = np.array([-3, 1, -2])
-    euler_angles2 = np.array([np.pi / 2, -np.pi / 3, 5 * np.pi / 4])
+    euler_angles2 = np.array([np.pi / 11, -2 * np.pi / 3, 15 * np.pi / 19])
     A2 = Euler2A(euler_angles2[0], euler_angles2[1], euler_angles2[2])
     p2, rotation_angle2 = AxisAngle(A2)
     q2 = AxisAngle2Q(p2, rotation_angle2)
-    # print(q2)
 
     qs = slerp(q1, q2, t, tm)
 
@@ -257,7 +256,7 @@ def display():
     phi, theta, psi = A2Euler(A_s)
     c = center_translation(point1, point2, t, tm)
 
-    red_lighting()
+    yellow_lighting()
 
     glPushMatrix()
     glTranslatef(point1[0], point1[1], point1[2])
@@ -272,27 +271,17 @@ def display():
     material()
 
     glPushMatrix()
-    # glTranslatef(point1[0], point1[1], point1[2])
-    # glRotatef(np.rad2deg(euler_angles1[0]), 1, 0, 0)
-    # glRotatef(np.rad2deg(euler_angles1[1]), 0, 1, 0)
-    # glRotatef(np.rad2deg(euler_angles1[2]), 0, 0, 1)
-    # glRotatef((euler_angles1[0]), 1, 0, 0)
-    # glRotatef((euler_angles1[1]), 0, 1, 0)
-    # glRotatef((euler_angles1[2]), 0, 0, 1)
     glTranslatef(c[0], c[1], c[2])
     glRotatef(np.rad2deg(phi), 1, 0, 0)
     glRotatef(np.rad2deg(theta), 0, 1, 0)
     glRotatef(np.rad2deg(psi), 0, 0, 1)
-    # glRotatef((phi), 1, 0, 0)
-    # glRotatef((theta), 0, 1, 0)
-    # glRotatef((psi), 0, 0, 1)
     glutSolidTeapot(0.75)
     glPopMatrix()
 
     glDisable(GL_LIGHTING)
     glDisable(GL_LIGHT0)
 
-    red_lighting()
+    yellow_lighting()
 
     glPushMatrix()
     glTranslatef(point2[0], point2[1], point2[2])
@@ -307,10 +296,10 @@ def display():
     glDisable(GL_LIGHT1)
     draw_axes()
 
-    print(q1)
-    print(qs)
-    print(q2)
-    print(c)
+    # print(q1)
+    # print(qs)
+    # print(q2)
+    # print(c)
 
     glutSwapBuffers()
 
