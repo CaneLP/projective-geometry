@@ -77,7 +77,7 @@ def AxisAngle2Q(p, phi):
     w = np.cos(phi / 2)
     p = p / np.linalg.norm(p)
     im = np.sin(phi / 2) * p
-    q = Quaternion(real=w, imaginary=im)
+    q = Quaternion(imaginary=im, real=w)
     return q
 
 
@@ -93,6 +93,21 @@ def Q2AxisAngle(q):
         p = p / np.linalg.norm(p)
 
     return p, phi
+
+
+def slerp(q1, q2, t, tm):
+    dot = q1.conjugate.real * q2.real
+    # print(cos0)
+    if dot < 0:
+        q1 = -q1
+        dot = -dot
+    if dot > 0.95:
+        return q1
+        # or do lerp
+
+    phi = np.arccos(dot)
+    qs = (np.sin(phi * (1 - t / tm)) / np.sin(phi)) * q1 + (np.sin(phi * (t / tm)) / np.sin(phi)) * q2
+    return qs
 
 
 def main():
@@ -136,6 +151,30 @@ def main():
     print("\n-Q2AxisAngle-")
     p, rotation_angle = Q2AxisAngle(q)
     print("p = %s, rotation angle phi = %s" % (p, rotation_angle))
+
+    print("\n-Slerp-")
+    point1 = np.array([3, 2, 1])
+    euler_angles1 = np.array([7 * np.pi / 6, np.pi / 4, 3 * np.pi / 4])
+    A1 = Euler2A(euler_angles1[0], euler_angles1[1], euler_angles1[2])
+    p1, rotation_angle1 = AxisAngle(A1)
+    q1 = AxisAngle2Q(p1, rotation_angle1)
+    # print(q1)
+
+    point2 = np.array([1.5, 0, 0])
+    euler_angles2 = np.array([np.pi / 2, -np.pi / 3, 5 * np.pi / 4])
+    A2 = Euler2A(euler_angles2[0], euler_angles2[1], euler_angles2[2])
+    p2, rotation_angle2 = AxisAngle(A2)
+    q2 = AxisAngle2Q(p2, rotation_angle2)
+    # print(q2)
+
+    tm = 1000
+
+    for t in range(tm):
+        qs = slerp(q1, q2, t, tm)
+        print(qs)
+
+    print()
+    print(q2)
 
 
 if __name__ == '__main__':
